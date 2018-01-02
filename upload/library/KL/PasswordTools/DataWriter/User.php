@@ -41,7 +41,7 @@ class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_
             /* Check for blacklist hit with force reject enabled */
             if($requirements['force_reject']) {
                 foreach($pwd_result['match_sequence'] as $match_sequence) {
-                    if($match_sequence->dictionaryName === 'user_inputs') {
+                    if(isset($match_sequence->dictionaryName) && $match_sequence->dictionaryName === 'user_inputs') {
                         $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_errorInvalidExpression'), 'password');
                         return false;
                     }
