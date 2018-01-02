@@ -7,10 +7,6 @@
  *  @last_edit:	15.08.2015
  */
 
-/**
- * Class SpatialMatch.
- * @package ZxcvbnPhp\Matchers
- */
 class KL_PasswordTools_Zxcvbn_Matchers_SpatialMatch extends KL_PasswordTools_Zxcvbn_Matchers_Match
 {
 
@@ -58,7 +54,7 @@ class KL_PasswordTools_Zxcvbn_Matchers_SpatialMatch extends KL_PasswordTools_Zxc
     {
 
         $matches = array();
-        $graphs = static::getAdjacencyGraphs();
+        $graphs = KL_PasswordTools_Zxcvbn_Matchers_AdjacencyGraph::getAdjacencyMatrix();
         foreach ($graphs as $name => $graph) {
             $results = static::graphMatch($password, $graph);
             foreach ($results as $result) {
@@ -243,16 +239,5 @@ class KL_PasswordTools_Zxcvbn_Matchers_SpatialMatch extends KL_PasswordTools_Zxc
             }
         }
         return $sum / count(array_keys($graph));
-    }
-
-    /**
-     * Load adjacency graphs.
-     *
-     * @return array
-     */
-    protected static function getAdjacencyGraphs()
-    {
-        $data = file_get_contents(dirname(__FILE__) . '/adjacency_graphs.json');
-        return json_decode($data, true);
     }
 }

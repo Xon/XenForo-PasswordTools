@@ -42,7 +42,7 @@ class KL_PasswordTools_Zxcvbn_Matchers_L33tMatch extends KL_PasswordTools_Zxcvbn
         $translatedWord = static::translate($password, $map);
 
         $matches = array();
-        $dicts = static::getRankedDictionaries();
+        $dicts = KL_PasswordTools_Zxcvbn_Matchers_RankedFrequencyList::getRankedFrequencyList();
         foreach ($dicts as $name => $dict) {
             $results = static::dictionaryMatch($translatedWord, $dict);
             foreach ($results as $result) {

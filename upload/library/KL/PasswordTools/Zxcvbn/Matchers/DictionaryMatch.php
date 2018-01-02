@@ -33,7 +33,7 @@ class KL_PasswordTools_Zxcvbn_Matchers_DictionaryMatch extends KL_PasswordTools_
     public static function match($password, array $userInputs = array())
     {
         $matches = array();
-        $dicts = static::getRankedDictionaries();
+        $dicts = KL_PasswordTools_Zxcvbn_Matchers_RankedFrequencyList::getRankedFrequencyList();
         if (!empty($userInputs)) {
             $dicts['user_inputs'] = array();
             foreach ($userInputs as $rank => $input) {
@@ -155,16 +155,5 @@ class KL_PasswordTools_Zxcvbn_Matchers_DictionaryMatch extends KL_PasswordTools_
         }
 
         return $result;
-    }
-
-    /**
-     * Load ranked frequency dictionaries.
-     *
-     * @return array
-     */
-    protected static function getRankedDictionaries()
-    {
-        $data = file_get_contents(dirname(__FILE__) . '/ranked_frequency_lists.json');
-        return json_decode($data, true);
     }
 }
