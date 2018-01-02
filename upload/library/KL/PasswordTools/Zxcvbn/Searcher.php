@@ -122,7 +122,7 @@ class KL_PasswordTools_Zxcvbn_Searcher
      */
     protected function makeBruteforceMatch($password, $begin, $end, $cardinality = null)
     {
-        $match = new Bruteforce($password, $begin, $end, substr($password, $begin, $end + 1), $cardinality);
+        $match = new KL_PasswordTools_Zxcvbn_Matchers_Bruteforce($password, $begin, $end, substr($password, $begin, $end + 1), $cardinality);
         // Set entropy in match.
         $match->getEntropy();
         return $match;
