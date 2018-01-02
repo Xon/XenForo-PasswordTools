@@ -3,9 +3,102 @@
  *
  *	@author: Katsulynx
  *  @last_edit:	15.08.2015
- *  @compiled: 15.08.2015 - Google Closure Compiler
  */
-$(document).ready(function(){var e=["","easy","medium","hard","brutal"],b=!1,c=!1,d=!1;$("#passwordStrengthPhrase").prev().on("input",function(a){a=$(this).val();$("#passwordReadyBox").removeClass("valid");d=c=!1;a.length&&a.length>=pwd_minlength?(d=!0,a=zxcvbn(a,pwd_checklist),pwd_forcepwd&&$.each(a.match_sequence,function(a,b){"user_inputs"===b.dictionary_name&&(c=!0)}),c?(b=!1,$("#passwordStrengthMeter, #passwordStrengthPhrase").removeClass(),$("#passwordStrengthPhrase").empty().append(pwd_strings[6])):
-($("#passwordStrengthMeter, #passwordStrengthPhrase").removeClass().addClass(e[a.score]),$("#passwordStrengthPhrase").empty().append(pwd_strings[a.score]),a.score>=pwd_minstrength?(b=!0,$("#passwordReadyBox").addClass("valid")):b=!1)):($("#passwordStrengthMeter, #passwordStrengthPhrase").removeClass(),$("#passwordStrengthPhrase").empty().append(pwd_strings[5]),b=!1)});$("#passwordStrengthPhrase, #passwordCompareBox").prev().on("input",function(){var a=[$('#passwordCompareBox').prev().val(),$("#passwordStrengthPhrase").prev().val()];
-a[0]&&a[0]===a[1]?$("#passwordCompareBox").addClass("valid"):$("#passwordCompareBox").removeClass("valid")});$("input[type=submit]").click(function(a){b||(a.preventDefault(),$(".errorPanel").remove(),$(".pageContent form").prepend(jQuery("<div/>",{"class":"errorPanel",id:"errorPanel"}).append(jQuery("<h3/>",{"class":"errorHeading",text:pwd_errorstrings[3]+":"}),jQuery("<div/>",{"class":"baseHtml errors"}).append(jQuery("<ol/>").append(jQuery("<li/>",{text:d?c?pwd_errorstrings[1]:pwd_errorstrings[2]:pwd_errorstrings[0]}))))),
-$("html, body").animate({scrollTop:$("#errorPanel").offset().top-40},"fast"))})});
+ 
+$(document).ready(function() {
+	var pwd_classes = ['','easy', 'medium', 'hard', 'brutal'];
+	var pwd_pass = false;
+	var pwd_rejected = false;
+	var pwd_length = false;
+	
+	$('#passwordStrengthPhrase').prev().on('input', function(event) {
+		var pwd = $(this).val();
+		$('#passwordReadyBox').removeClass('valid');
+			pwd_rejected = false;
+			pwd_length = false;
+		
+		// Check if the required password length is met
+		if(pwd.length && pwd.length >= pwd_minlength) {
+			pwd_length = true;
+			
+			// Eval the password
+			var pwd_strength = zxcvbn(pwd,pwd_checklist);
+			
+			var r,e,n,a,i,o;
+			var t = pwd_strength.crack_time;
+			a=60,n=60*a,e=24*n,i=31*e,o=12*i,r=100*o;
+			var crack_time =
+				(a>t) ? pwd_timestrings[0] :
+					(n>t) ? 1 + Math.ceil(t/a)+pwd_timestrings[1] :
+						(e>t) ? 1 + Math.ceil(t/n)+pwd_timestrings[2] : 
+							(i>t) ? 1 + Math.ceil(t/e)+pwd_timestrings[3] : 
+								(o>t) ? 1 + Math.ceil(t/i)+pwd_timestrings[4] : 
+									(r>t) ? 1 + Math.ceil(t/o)+pwd_timestrings[5] :
+										pwd_timestrings[6];
+			console.log(crack_time);	
+		
+			if(pwd_forcepwd) {
+				// Reject password if we have a hit on the blacklist
+				$.each(pwd_strength.match_sequence, function(key,data) {
+					if(data.dictionary_name === "user_inputs") {
+						pwd_rejected = true;	
+					}
+				});
+			}
+			if(pwd_rejected) {
+				pwd_pass = false;
+				$('#passwordStrengthMeter, #passwordStrengthPhrase').removeClass();
+				$('#passwordStrengthPhrase').empty().append(pwd_strings[6]);
+			}
+			else {
+				$('#passwordStrengthMeter, #passwordStrengthPhrase').removeClass().addClass(pwd_classes[pwd_strength.score]);
+				$('#passwordStrengthPhrase').empty().append(pwd_strings[pwd_strength.score]);
+				
+				// Check for minimum required strength
+				if(pwd_strength.score >= pwd_minstrength) {
+					pwd_pass = true;
+					$('#passwordReadyBox').addClass('valid');
+				}
+				else {
+					pwd_pass = false;
+				}
+			}
+		}
+		else {
+			$('#passwordStrengthMeter, #passwordStrengthPhrase').removeClass();
+			$('#passwordStrengthPhrase').empty().append(pwd_strings[5]);
+			pwd_pass = false;
+		}
+	});
+	
+	$('#passwordStrengthPhrase, #passwordCompareBox').prev().on('input', function() {
+		var pwd = [
+				$('#passwordCompareBox').prev().val(),
+				$('#passwordStrengthPhrase').prev().val()
+			]
+		if(pwd[0] && pwd[0] === pwd[1]) {
+			$('#passwordCompareBox').addClass('valid');
+		}
+		else {
+			$('#passwordCompareBox').removeClass('valid');
+		}
+	});
+	
+	$('input[type=submit]').click(function(event) {
+		if(!pwd_pass) {
+			event.preventDefault();
+			$('.errorPanel').remove();
+			$('.pageContent form').prepend(
+				jQuery('<div/>', {'class': 'errorPanel', id: 'errorPanel'}).append(
+					jQuery('<h3/>', {'class': 'errorHeading', text: pwd_errorstrings[3]+':'}),
+					jQuery('<div/>', {'class': 'baseHtml errors'}).append(
+						jQuery('<ol/>').append(
+							jQuery('<li/>', {text: (!pwd_length ? pwd_errorstrings[0] : (pwd_rejected ? pwd_errorstrings[1] : pwd_errorstrings[2]))})
+						)
+					)
+				)
+			);
+			$('html, body').animate({ scrollTop: $("#errorPanel").offset().top - 40}, 'fast');
+		}
+	});
+});
