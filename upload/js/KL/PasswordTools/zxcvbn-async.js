@@ -1,0 +1,3 @@
+// cross-browser asynchronous script loading for zxcvbn.
+// adapted from http://friendlybit.com/js/lazy-loading-asyncronous-javascript/
+(function(){var a=document.querySelectorAll("script[src]"),a=a[a.length-1].src,c=a.split("/"),d=a.replace(c[c.length-1],"")+"/zxcvbn.js",a=function(){var a,b;b=document.createElement("script");b.src=d;b.type="text/javascript";b.async=!0;a=document.getElementsByTagName("script")[0];return a.parentNode.insertBefore(b,a)};null!=window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,!1)}).call(this);
