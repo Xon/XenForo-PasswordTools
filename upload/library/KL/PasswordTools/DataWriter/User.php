@@ -12,7 +12,7 @@ class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_
         if ($requirePassword) {
             /* Gather required stuff */
             $pattern    = $password;
-            $zxcvbn     = new KL_PasswordTools_Zxcvbn;
+            $zxcvbn     = new KL_PasswordTools_Zxcvbn();
             $options    = XenForo_Application::get('options');
 
             /* Gather requirements */
@@ -52,4 +52,9 @@ class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_
         /* Let the parent work */
         return parent::setPassword($password, $passwordConfirm, $auth, $requirePassword);
     }
+}
+
+if (false)
+{
+    class XFCP_KL_PasswordTools_DataWriter_User extends XenForo_DataWriter_User {}
 }
