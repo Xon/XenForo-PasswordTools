@@ -3,8 +3,8 @@
 /**
  * KL_PasswordTools_Matcher
  *
- *	@author: Ben Jeavons
- *  @last_edit:	15.08.2015
+ *	@author: Ben Jeavons, Katsulynx
+ *  @last_edit:	21.08.2015
  */
 
 class KL_PasswordTools_Zxcvbn_Matcher
@@ -27,6 +27,7 @@ class KL_PasswordTools_Zxcvbn_Matcher
     {
         $matches = array();
         foreach ($this->getMatchers() as $matcher) {
+            $matcher = get_class($this).'s_'.$matcher.'Match';
             $matched = $matcher::match($password, $userInputs);
             if (is_array($matched) && !empty($matched)) {
                 $matches = array_merge($matches, $matched);
@@ -41,18 +42,7 @@ class KL_PasswordTools_Zxcvbn_Matcher
      * @return array
      *   Array of classes implementing MatchInterface
      */
-    protected function getMatchers()
-    {
-        // @todo change to dynamic
-        return array(
-            'KL_PasswordTools_Zxcvbn_Matchers_DateMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_DigitMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_L33tMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_RepeatMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_SequenceMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_SpatialMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_YearMatch',
-            'KL_PasswordTools_Zxcvbn_Matchers_DictionaryMatch',
-        );
+    protected function getMatchers() {
+        return array('Date','Digit','L33t','Repeat','Sequence','Spatial','Year','Dictionary');
     }
 }

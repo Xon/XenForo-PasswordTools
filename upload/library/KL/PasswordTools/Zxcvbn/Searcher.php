@@ -4,7 +4,7 @@
  * KL_PasswordTools_Zxcvbn_Searcher
  *
  *	@author: Ben Jeavons
- *  @last_edit:	15.08.2015
+ *  @last_edit:	18.08.2015
  */
 
 class KL_PasswordTools_Zxcvbn_Searcher

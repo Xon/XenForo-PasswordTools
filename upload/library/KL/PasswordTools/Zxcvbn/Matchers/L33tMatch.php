@@ -4,7 +4,7 @@
  * KL_PasswordTools_Zxcvbn_Matchers_L33tMatch
  *
  *	@author: Ben Jeavons
- *  @last_edit:	15.08.2015
+ *  @last_edit:	21.08.2015
  */
 
 class KL_PasswordTools_Zxcvbn_Matchers_L33tMatch extends KL_PasswordTools_Zxcvbn_Matchers_DictionaryMatch
@@ -169,14 +169,6 @@ class KL_PasswordTools_Zxcvbn_Matchers_L33tMatch extends KL_PasswordTools_Zxcvbn
             'x' => array('%'),
             'z' => array('2'),
         );
-
-        /*$chars = array_unique(str_split($password));
-        foreach ($l33t as $letter => $subs) {
-            $relevent_subs = array_intersect($subs, $chars);
-            if (!empty($relevent_subs)) {
-                $map[] = $relevent_subs;
-            }
-        }*/
 
         foreach (range(0, strlen($password) - 1) as $i) {
             $map[$i] = null;
