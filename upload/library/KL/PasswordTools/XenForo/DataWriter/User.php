@@ -1,13 +1,13 @@
 <?php
 
 /**
- * KL_PasswordTools_DataWriter_User
+ * KL_PasswordTools_XenForo_DataWriter_User
  *
  *	@author: Katsulynx
  *  @last_edit:	21.08.2015
  */
 
-class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_User {
+class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_XenForo_DataWriter_User {
 	public function setPassword($password, $passwordConfirm = false, XenForo_Authentication_Abstract $auth = null, $requirePassword = false) {
         if ($requirePassword) {
             /* Gather required stuff */
@@ -56,5 +56,5 @@ class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_
 
 if (false)
 {
-    class XFCP_KL_PasswordTools_DataWriter_User extends XenForo_DataWriter_User {}
+    class XFCP_KL_PasswordTools_XenForo_DataWriter_User extends XenForo_DataWriter_User {}
 }
