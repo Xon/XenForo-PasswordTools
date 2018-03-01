@@ -50,6 +50,8 @@ class KL_PasswordTools_DataWriter_User extends XFCP_KL_PasswordTools_DataWriter_
         }
 
         /* Let the parent work */
+		$this->set('kl_pwd_date', XenForo_Application::$time);
+		
         return parent::setPassword($password, $passwordConfirm, $auth, $requirePassword);
     }
 }
