@@ -11,12 +11,19 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
 {
     public function setPassword($password, $passwordConfirm = false, XenForo_Authentication_Abstract $auth = null, $requirePassword = false)
     {
+        $options = XenForo_Application::getOptions();
+
+        if ($this->getOption(self::OPTION_ADMIN_EDIT) && !$options->enforcePasswordComplexityForAdmins)
+        {
+            return parent::setPassword($password, $passwordConfirm, $auth, $requirePassword);
+        }
+
         if ($requirePassword)
         {
             /* Gather required stuff */
             $pattern = $password;
             $zxcvbn = new KL_PasswordTools_Zxcvbn();
-            $options = XenForo_Application::getOptions();
+
 
             /* Gather requirements */
             $requirements = [
