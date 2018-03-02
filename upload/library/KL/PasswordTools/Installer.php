@@ -15,9 +15,9 @@ class KL_PasswordTools_Installer
                 true
             );
         }
-        if (XenForo_Application::$versionId < 1030070)
+        if (XenForo_Application::$versionId < 1040070)
         {
-            throw new XenForo_Exception('XenForo 1.3.0+ is Required!', true);
+            throw new XenForo_Exception('XenForo 1.4.0+ is Required!', true);
         }
 
         $addonsToUninstall = array('jQueryComplexify','kl_password_tools');
