@@ -13,11 +13,15 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
 
         if ($requirePassword)
         {
-            if (!empty($options->passwordToolsCheckTypes['zxcvbn']) && !$this->sv_zxcvbnCheck($password))
+            if (!empty($options->passwordToolsCheckTypes['zxcvbn']))
             {
-                return false;
+                $this->sv_zxcvbnCheck($password);
             }
-            if (!empty($options->passwordToolsCheckTypes['pwned']) && !$this->sv_pwnedCheck($password))
+            if (!empty($options->passwordToolsCheckTypes['pwned']))
+            {
+                $this->sv_pwnedCheck($password);
+            }
+            if ($this->getErrors())
             {
                 return false;
             }
@@ -92,6 +96,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         }
         if (isset($suffixSet[$suffix]) && $suffixSet[$suffix] >= $minimumUsages)
         {
+            $this->error(new XenForo_Phrase('KL_pwned_password_x', ['count' => $suffixSet[$suffix]]), 'password');
             return false;
         }
 
