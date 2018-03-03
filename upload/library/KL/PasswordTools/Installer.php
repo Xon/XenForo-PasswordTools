@@ -33,5 +33,26 @@ class KL_PasswordTools_Installer
                 $dw->delete();
             }
         }
+
+        $db = XenForo_Application::getDb();
+
+        $db->query('
+            CREATE TABLE IF NOT EXISTS `xf_sv_pwned_hash_cache` (
+              `prefix` binary(5) NOT NULL,
+              `suffixes` blob NOT NULL,
+              `last_update` int(10) unsigned NOT NULL,
+              PRIMARY KEY (`prefix`),
+              KEY last_update (`last_update`)
+            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
+        ');
+    }
+
+    public function uninstall()
+    {
+        $db = XenForo_Application::getDb();
+
+        $db->query('
+            drop table if exists xf_sv_pwned_hash_cache;
+        ');
     }
 }

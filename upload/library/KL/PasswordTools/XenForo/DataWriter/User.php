@@ -107,8 +107,28 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         return true;
     }
 
-    protected function getPwnedPrefixMatches($prefix)
+    protected function getPwnedPrefixMatches($prefix, $cutoff = null)
     {
+        $db = $this->_db;
+        if ($cutoff === null)
+        {
+            $pwnedPasswordCacheTime = intval(XenForo_Application::getOptions()->pwnedPasswordCacheTime);
+            if ($pwnedPasswordCacheTime > 0)
+            {
+                $cutoff = XenForo_Application::$time - $pwnedPasswordCacheTime * 86400;
+            }
+        }
+        $cutoff  = $cutoff ? $cutoff: 0;
+        $suffixes = $db->fetchOne('select suffixes from xf_sv_pwned_hash_cache where prefix = ? and last_update > ?', [$prefix, $cutoff]);
+        if ($suffixes)
+        {
+            $suffixSet = @json_decode($suffixes, true);
+            if (is_array($suffixSet))
+            {
+                return $suffixSet;
+            }
+        }
+
         $suffixCount = [];
         try
         {
@@ -128,6 +148,12 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
                     $suffixCount[$suffixInfo[0]] = intval($suffixInfo[1]);
                 }
             }
+            else
+            {
+                // API failed
+                XenForo_Error::logException(new Exception('Pwned Password API failed;' . $response->getStatus() .' , '. $response->getBody()), false);
+                return true;
+            }
         }
         catch (Exception $e)
         {
@@ -135,6 +161,13 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
 
             return null;
         }
+
+        $db->query('insert into xf_sv_pwned_hash_cache (prefix, suffixes, last_update)
+          values (?,?,?)
+          ON DUPLICATE KEY UPDATE
+            suffixes = values(suffixes),
+            last_update = values(last_update)
+         ', [$prefix, json_encode($suffixCount) ,XenForo_Application::$time]);
 
         return $suffixCount;
     }
