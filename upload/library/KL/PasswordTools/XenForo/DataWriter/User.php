@@ -109,7 +109,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         try
         {
             $options = XenForo_Application::getOptions();
-            $httpClient = XenForo_Helper_Http::getClient("https://api.haveibeenpwned.com/v2/range/{$prefix}", [
+            $httpClient = XenForo_Helper_Http::getClient("https://api.pwnedpasswords.com/range/{$prefix}", [
                 'useragent' => "XenForo/" . XenForo_Application::$version . " (" . $options->boardUrl . ')',
             ]);
             $response = $httpClient->request('GET');
