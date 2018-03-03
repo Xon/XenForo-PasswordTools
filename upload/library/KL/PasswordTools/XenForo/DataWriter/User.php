@@ -102,9 +102,11 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         {
             return true;
         }
-        if (isset($suffixSet[$suffix]) && $suffixSet[$suffix] >= $minimumUsages)
+        if (isset($suffixSet[$suffix]) &&
+            ($useCount = $suffixSet[$suffix]) &&
+            $useCount >= $minimumUsages)
         {
-            $this->error(new XenForo_Phrase('KL_pwned_password_x', ['count' => $suffixSet[$suffix]]), 'password');
+            $this->error(new XenForo_Phrase('KL_pwned_password_x', ['count' => $useCount, 'countFormatted' => XenForo_Locale::numberFormat($useCount)]), 'password');
             return false;
         }
 

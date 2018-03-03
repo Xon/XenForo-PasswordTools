@@ -47,7 +47,7 @@ class KL_PasswordTools_Installer
         ');
     }
 
-    public function uninstall()
+    public static function uninstall()
     {
         $db = XenForo_Application::getDb();
 
