@@ -85,6 +85,10 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
     {
         $options = XenForo_Application::getOptions();
         $minimumUsages = intval($options->pwnedPasswordReuseCount);
+        if ($minimumUsages < 1)
+        {
+            return true;
+        }
 
         $hash = strtoupper(sha1($password));
         $prefix = substr($hash, 0, 5);
