@@ -16,14 +16,18 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             if (!empty($options->passwordToolsCheckTypes['zxcvbn']))
             {
                 $this->sv_zxcvbnCheck($password);
+                if ($this->getErrors())
+                {
+                    return false;
+                }
             }
             if (!empty($options->passwordToolsCheckTypes['pwned']))
             {
                 $this->sv_pwnedCheck($password);
-            }
-            if ($this->getErrors())
-            {
-                return false;
+                if ($this->getErrors())
+                {
+                    return false;
+                }
             }
         }
 
