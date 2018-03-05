@@ -95,9 +95,7 @@ $(document).ready(function() {
             $('<div/>', {'class': 'baseHtml errors'}).append($list)
         );
         $form.prepend($errorPanel).xfActivate();
-        if ($errorPanel.length) {
-            $('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
-        }
+        //$('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
     };
 
 
