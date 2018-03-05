@@ -28,6 +28,11 @@ $(document).ready(function() {
     if (typeof zxcvbn !== "undefined") {
         $passwordInput.on('input', function (event) {
             var pwd = $(this).val();
+            if (pwd) {
+                $passwordStrength.show();
+            } else {
+                $passwordStrength.hide();
+            }
             $passwordReadBox.removeClass('valid');
             pwd_rejected = false;
             pwd_length = false;
