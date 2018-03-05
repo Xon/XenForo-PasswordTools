@@ -83,26 +83,48 @@ $(document).ready(function() {
         }
     });
 
-    $('input[type=submit]').click(function (event) {
-        if (!$passwordInput.prop('disabled') && !pwd_pass && typeof zxcvbn !== "undefined") {
-            event.preventDefault();
-            $('.errorPanel').remove();
-            $('.pageContent form').prepend(
-                jQuery('<div/>', {'class': 'errorPanel', id: 'errorPanel'}).append(
-                    jQuery('<h3/>', {'class': 'errorHeading', text: pwd_errorstrings[3] + ':'}),
-                    jQuery('<div/>', {'class': 'baseHtml errors'}).append(
-                        jQuery('<ol/>').append(
-                            jQuery('<li/>', {text: (!pwd_length ? pwd_errorstrings[0] : (pwd_rejected ? pwd_errorstrings[1] : pwd_errorstrings[2]))})
-                        )
-                    )
-                )
-            );
+    var createErrorPanel = function($form, errors) {
+        $form.find('.errorPanel').remove();
 
-            var $errorPanel = $("#errorPanel");
-            if ($errorPanel.length) {
-                $('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
-            }
+
+        var $list = $('<ol/>');
+        $.each(errors, function(i, errorText) { $list.append($('<li/>', {text: errorText } )); });
+
+        var $errorPanel = $('<div/>', {'class': 'errorPanel'}).append(
+            $('<h3/>', {'class': 'errorHeading', text: pwd_errorstrings[3] + ':'}),
+            $('<div/>', {'class': 'baseHtml errors'}).append($list)
+        );
+        $form.prepend($errorPanel).xfActivate();
+        if ($errorPanel.length) {
+            $('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
+        }
+    };
+
+
+    var $form = $passwordInput.closest('form');
+    /*
+    $form.bind('AutoValidationBeforeSubmit', function(e)
+    {
+        // called during form-validation stage
+        if (!$passwordInput.prop('disabled') && !pwd_pass && typeof zxcvbn !== "undefined") {
+            e.preventSubmit = true;
+            e.preventDefault();
+
+            createErrorPanel($form, [
+                (!pwd_length ? pwd_errorstrings[0] : (pwd_rejected ? pwd_errorstrings[1] : pwd_errorstrings[2]))
+            ]);
         }
     });
-
+    */
+    $form.bind('AutoValidationError', function(e)
+    {
+        // called after results come back
+        if (('ajaxData' in e) &&
+            ('error' in e.ajaxData) &&
+            e.ajaxData.error)
+        {
+            createErrorPanel($form, e.ajaxData.error);
+            e.preventDefault();
+        }
+    });
 });
