@@ -16,18 +16,14 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             if (!empty($options->passwordToolsCheckTypes['zxcvbn']))
             {
                 $this->sv_zxcvbnCheck($password);
-                if ($this->getErrors())
-                {
-                    return false;
-                }
             }
             if (!empty($options->passwordToolsCheckTypes['pwned']))
             {
                 $this->sv_pwnedCheck($password);
-                if ($this->getErrors())
-                {
-                    return false;
-                }
+            }
+            if ($this->getErrors())
+            {
+                return false;
             }
         }
 
@@ -52,7 +48,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         /* Check against length */
         if (strlen($pattern) < $requirements['minimum_length'])
         {
-            $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_error_TooShort'), 'password');
+            $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_error_TooShort'));
 
             return false;
         }
@@ -63,7 +59,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         /* Check against score */
         if ($pwd_result['score'] < $requirements['minimum_score'])
         {
-            $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_error_TooWeak'), 'password');
+            $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_error_TooWeak'));
 
             return false;
         }
@@ -75,7 +71,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             {
                 if (isset($match_sequence->dictionaryName) && $match_sequence->dictionaryName === 'user_inputs')
                 {
-                    $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_errorInvalidExpression'), 'password');
+                    $this->error(new XenForo_Phrase('KL_PasswordStrengthMeter_errorInvalidExpression'));
 
                     return false;
                 }
@@ -106,7 +102,7 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             ($useCount = $suffixSet[$suffix]) &&
             $useCount >= $minimumUsages)
         {
-            $this->error(new XenForo_Phrase('KL_pwned_password_x', ['count' => $useCount, 'countFormatted' => XenForo_Locale::numberFormat($useCount)]), 'password');
+            $this->error(new XenForo_Phrase('KL_pwned_password_x', ['count' => $useCount, 'countFormatted' => XenForo_Locale::numberFormat($useCount)]));
             return false;
         }
 
@@ -158,8 +154,10 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             else
             {
                 // API failed
-                XenForo_Error::logException(new Exception('Pwned Password API failed;' . $response->getStatus() .' , '. $response->getBody()), false);
-                return true;
+                //XenForo_Error::logException(new Exception('Pwned Password API failed;' . $response->getStatus() .' , '. $response->getBody()), false);
+
+                $this->error(new XenForo_Phrase('KL_Pwned_Password_API_Failure'));
+                return false;
             }
         }
         catch (Exception $e)
@@ -167,7 +165,8 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
             // since sanitizinig Exception is too hard, and setPassword will contain the password!!, swallow the exception
             //XenForo_Error::logException($e, false);
 
-            return null;
+            $this->error(new XenForo_Phrase('KL_Pwned_Password_API_Failure'));
+            return false;
         }
 
         $db->query('insert into xf_sv_pwned_hash_cache (prefix, suffixes, last_update)
