@@ -25,8 +25,9 @@ $(document).ready(function() {
         $passwordConfirm.on('input', comparePasswordSame);
     }
 
-    if (typeof zxcvbn !== "undefined") {
-        $passwordInput.on('input', function (event) {
+
+    $passwordInput.on('input', function (event) {
+        if (typeof zxcvbn !== "undefined") {
             var pwd = $(this).val();
             if (pwd) {
                 $passwordStrength.show();
@@ -79,28 +80,29 @@ $(document).ready(function() {
                 $passwordStrength.empty().append(pwd_strings[5]);
                 pwd_pass = false;
             }
-        });
+        }
+    });
 
-        $('input[type=submit]').click(function (event) {
-            if (!$passwordInput.prop('disabled') && !pwd_pass) {
-                event.preventDefault();
-                $('.errorPanel').remove();
-                $('.pageContent form').prepend(
-                    jQuery('<div/>', {'class': 'errorPanel', id: 'errorPanel'}).append(
-                        jQuery('<h3/>', {'class': 'errorHeading', text: pwd_errorstrings[3] + ':'}),
-                        jQuery('<div/>', {'class': 'baseHtml errors'}).append(
-                            jQuery('<ol/>').append(
-                                jQuery('<li/>', {text: (!pwd_length ? pwd_errorstrings[0] : (pwd_rejected ? pwd_errorstrings[1] : pwd_errorstrings[2]))})
-                            )
+    $('input[type=submit]').click(function (event) {
+        if (!$passwordInput.prop('disabled') && !pwd_pass && typeof zxcvbn !== "undefined") {
+            event.preventDefault();
+            $('.errorPanel').remove();
+            $('.pageContent form').prepend(
+                jQuery('<div/>', {'class': 'errorPanel', id: 'errorPanel'}).append(
+                    jQuery('<h3/>', {'class': 'errorHeading', text: pwd_errorstrings[3] + ':'}),
+                    jQuery('<div/>', {'class': 'baseHtml errors'}).append(
+                        jQuery('<ol/>').append(
+                            jQuery('<li/>', {text: (!pwd_length ? pwd_errorstrings[0] : (pwd_rejected ? pwd_errorstrings[1] : pwd_errorstrings[2]))})
                         )
                     )
-                );
+                )
+            );
 
-                var $errorPanel = $("#errorPanel");
-                if ($errorPanel.length) {
-                    $('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
-                }
+            var $errorPanel = $("#errorPanel");
+            if ($errorPanel.length) {
+                $('html, body').animate({scrollTop: $errorPanel.offset().top - 40}, 'fast');
             }
-        });
-    }
+        }
+    });
+
 });
