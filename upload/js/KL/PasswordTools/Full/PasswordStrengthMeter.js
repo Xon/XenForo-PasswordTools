@@ -5,7 +5,7 @@ $(document).ready(function() {
     var pwd_length = false;
 
     var $passwordCompareBox = $('#passwordCompareBox');
-    var $passwordReadBox = $('#passwordReadyBox');
+    var $passwordReadyBox = $('#passwordReadyBox');
     var $passwordStrength = $('#passwordStrengthPhrase');
     var $passwordMeter = $('#passwordStrengthMeter');
     var $passwordInput = $('input[data-password-check="1"]');
@@ -31,10 +31,14 @@ $(document).ready(function() {
             var pwd = $(this).val();
             if (pwd) {
                 $passwordStrength.show();
+                $passwordCompareBox.show();
+                $passwordReadyBox.show();
             } else {
                 $passwordStrength.hide();
+                $passwordCompareBox.hide();
+                $passwordReadyBox.hide();
             }
-            $passwordReadBox.removeClass('valid');
+            $passwordReadyBox.removeClass('valid');
             pwd_rejected = false;
             pwd_length = false;
 
