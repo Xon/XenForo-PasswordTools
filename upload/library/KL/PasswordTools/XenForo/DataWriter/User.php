@@ -164,7 +164,8 @@ class KL_PasswordTools_XenForo_DataWriter_User extends XFCP_KL_PasswordTools_Xen
         }
         catch (Exception $e)
         {
-            XenForo_Error::logException($e, false);
+            // since sanitizinig Exception is too hard, and setPassword will contain the password!!, swallow the exception
+            //XenForo_Error::logException($e, false);
 
             return null;
         }
