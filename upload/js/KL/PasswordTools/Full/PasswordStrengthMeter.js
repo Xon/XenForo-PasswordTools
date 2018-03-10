@@ -20,6 +20,11 @@ $(document).ready(function() {
             } else {
                 $passwordCompareBox.removeClass('valid');
             }
+            if (pwd0)  {
+                $passwordCompareBox.show();
+            } else {
+                $passwordCompareBox.hide();
+            }
         };
         $passwordInput.on('input', comparePasswordSame);
         $passwordConfirm.on('input', comparePasswordSame);
@@ -31,11 +36,9 @@ $(document).ready(function() {
             var pwd = $(this).val();
             if (pwd) {
                 $passwordStrength.show();
-                $passwordCompareBox.show();
                 $passwordReadyBox.show();
             } else {
                 $passwordStrength.hide();
-                $passwordCompareBox.hide();
                 $passwordReadyBox.hide();
             }
             $passwordReadyBox.removeClass('valid');
@@ -71,7 +74,7 @@ $(document).ready(function() {
                     // Check for minimum required strength
                     if (pwd_strength.score >= pwd_minstrength) {
                         pwd_pass = true;
-                        $passwordReadBox.addClass('valid');
+                        $passwordReadyBox.addClass('valid');
                     }
                     else {
                         pwd_pass = false;
